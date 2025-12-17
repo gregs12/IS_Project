@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Philosophy Quote Quiz</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            padding: 40px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #2c3e50;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #7f8c8d;
+            font-style: italic;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        .score-board {
+            background: #ecf0f1;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            font-size: 1.2em;
+            color: #34495e;
+        }
+
+        .score-board strong {
+            color: #27ae60;
+        }
+
+        .progress-info {
+            color: #7f8c8d;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+
+        .quote-container {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            border-left: 5px solid #3498db;
+        }
+
+        .quote-text {
+            font-size: 1.4em;
+            font-style: italic;
+            color: #2c3e50;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        .philosopher-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .philosopher-btn {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            font-size: 1.1em;
+            font-family: 'Georgia', serif;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+
+        .philosopher-btn:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.4);
+        }
+
+        .philosopher-btn:active {
+            transform: translateY(0);
+        }
+
+        .philosopher-btn.correct {
+            background: #27ae60;
+            animation: pulse 0.5s;
+        }
+
+        .philosopher-btn.incorrect {
+            background: #e74c3c;
+            animation: shake 0.5s;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        .result-message {
+            font-size: 1.3em;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .result-message.correct {
+            background: #d4edda;
+            color: #155724;
+            border: 2px solid #c3e6cb;
+        }
+
+        .result-message.incorrect {
+            background: #f8d7da;
+            color: #721c24;
+            border: 2px solid #f5c6cb;
+        }
+
+        .philosopher-info {
+            background: #e8f4f8;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            text-align: left;
+            border-left: 4px solid #3498db;
+        }
+
+        .philosopher-info h3 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .philosopher-info p {
+            color: #34495e;
+            line-height: 1.6;
+        }
+
+        .paradox-section {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+            text-align: left;
+        }
+
+        .paradox-section h3 {
+            color: #856404;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .paradox-section p {
+            color: #856404;
+            line-height: 1.6;
+            font-style: italic;
+        }
+
+        .next-btn {
+            background: #27ae60;
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.2em;
+            font-family: 'Georgia', serif;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .next-btn:hover {
+            background: #229954;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(39, 174, 96, 0.4);
+        }
+
+        .completion-message {
+            background: #d1ecf1;
+            border: 2px solid #17a2b8;
+            color: #0c5460;
+            padding: 30px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .completion-message h2 {
+            margin-bottom: 15px;
+        }
+
+        .restart-btn {
+            background: #17a2b8;
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.2em;
+            font-family: 'Georgia', serif;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            margin-top: 15px;
+        }
+
+        .restart-btn:hover {
+            background: #138496;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(23, 162, 184, 0.4);
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 30px;
+            color: #3498db;
+            text-decoration: none;
+            font-size: 1.1em;
+            transition: color 0.3s ease;
+        }
+
+        .back-link:hover {
+            color: #2980b9;
+            text-decoration: underline;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏛️ Philosophy Quote Quiz</h1>
+        <p class="subtitle">Test your knowledge of the great thinkers</p>
+        
+        <div class="score-board">
+            Score: <strong><span id="score">0</span></strong> / <span id="total">0</span>
+            <div class="progress-info">Question <span id="question-num">1</span> of <span id="total-questions">15</span></div>
+        </div>
+
+        <div id="quiz-area">
+            <div class="quote-container">
+                <div class="quote-text" id="quote-text">"Loading quote..."</div>
+            </div>
+
+            <div class="philosopher-buttons" id="options-container"></div>
+
+            <div id="result-area" class="hidden"></div>
+
+            <button id="next-btn" class="next-btn hidden">Next Quote →</button>
+        </div>
+
+        <a href="../index.html" class="back-link">← Back to Philosophy Page</a>
+    </div>
+
+    <script>
+        const quotes = [
+            {
+                text: "I think, therefore I am.",
+                philosopher: "René Descartes",
+                info: "Descartes (1596-1650) was a French philosopher and mathematician. This famous statement from his 'Discourse on Method' represents his attempt to find absolute certainty through radical doubt."
+            },
+            {
+                text: "The unexamined life is not worth living.",
+                philosopher: "Socrates",
+                info: "Socrates (470-399 BCE) was a classical Greek philosopher credited as the founder of Western philosophy. He emphasized self-knowledge and the Socratic method of questioning."
+            },
+            {
+                text: "Man is condemned to be free.",
+                philosopher: "Jean-Paul Sartre",
+                info: "Sartre (1905-1980) was a French existentialist philosopher. This quote reflects his belief that humans have absolute freedom to choose, and with that freedom comes inescapable responsibility."
+            },
+            {
+                text: "God is dead. God remains dead. And we have killed him.",
+                philosopher: "Friedrich Nietzsche",
+                info: "Nietzsche (1844-1900) was a German philosopher who challenged traditional morality. This provocative statement reflects the decline of religious faith in modern society."
+            },
+            {
+                text: "I know that I know nothing.",
+                philosopher: "Socrates",
+                info: "This paradoxical statement embodies Socratic wisdom—recognizing the limits of one's own knowledge is the beginning of true wisdom."
+            },
+            {
+                text: "To be is to be perceived.",
+                philosopher: "George Berkeley",
+                info: "Berkeley (1685-1753) was an Irish philosopher who argued that material objects only exist as perceptions in minds. This is the core of his idealist philosophy."
+            },
+            {
+                text: "Hell is other people.",
+                philosopher: "Jean-Paul Sartre",
+                info: "From Sartre's play 'No Exit,' this often-misunderstood quote suggests that other people's judgments can trap us and prevent authentic self-definition."
+            },
+            {
+                text: "You have power over your mind - not outside events. Realize this, and you will find strength.",
+                philosopher: "Marcus Aurelius",
+                info: "Marcus Aurelius (121-180 CE) was a Roman Emperor and Stoic philosopher. His 'Meditations' emphasized controlling one's thoughts and reactions to external circumstances."
+            },
+            {
+                text: "He who has a why to live can bear almost any how.",
+                philosopher: "Friedrich Nietzsche",
+                info: "This quote emphasizes the importance of finding meaning and purpose in life as a source of resilience through suffering."
+            },
+            {
+                text: "One cannot step twice in the same river.",
+                philosopher: "Heraclitus",
+                info: "Heraclitus (535-475 BCE) was a pre-Socratic Greek philosopher known for his doctrine of change. This quote illustrates his belief that everything is in constant flux."
+            },
+            {
+                text: "The only true wisdom is in knowing you know nothing.",
+                philosopher: "Socrates",
+                info: "Another formulation of Socratic wisdom, emphasizing intellectual humility and the endless pursuit of knowledge."
+            },
+            {
+                text: "We are what we repeatedly do. Excellence, then, is not an act, but a habit.",
+                philosopher: "Aristotle",
+                info: "Aristotle (384-322 BCE) emphasized virtue ethics and the cultivation of good character through habitual practice of virtue."
+            },
+            {
+                text: "Do unto others as you would have them do unto you.",
+                philosopher: "Jesus",
+                info: "Jesus of Nazareth (c. 4 BCE - c. 30 CE) taught this Golden Rule as a fundamental ethical principle in the Sermon on the Mount."
+            },
+            {
+                text: "Love your enemies and pray for those who persecute you.",
+                philosopher: "Jesus",
+                info: "This radical teaching from the Sermon on the Mount calls for unconditional love and forgiveness, transcending natural human reactions."
+            },
+            {
+                text: "That which does not kill us makes us stronger.",
+                philosopher: "Friedrich Nietzsche",
+                info: "From 'Twilight of the Idols,' this quote reflects Nietzsche's belief in the value of struggle and adversity in personal growth."
+            }
+        ];
+
+        const paradoxes = [
+            {
+                title: "The Ship of Theseus",
+                text: "If all the parts of a ship are gradually replaced over time, is it still the same ship? And if the original parts are reassembled, which is the 'real' ship?"
+            },
+            {
+                title: "The Liar's Paradox",
+                text: "Consider the statement: 'This sentence is false.' If it's true, then it must be false. But if it's false, then it must be true. What is its truth value?"
+            },
+            {
+                title: "Zeno's Paradox of Achilles",
+                text: "Achilles races a tortoise with a head start. By the time Achilles reaches where the tortoise was, it has moved forward. This repeats infinitely. Can Achilles ever catch up?"
+            },
+            {
+                title: "The Problem of Evil",
+                text: "If God is all-powerful, all-knowing, and all-good, why does evil exist? Can these divine attributes be reconciled with the existence of suffering?"
+            },
+            {
+                title: "The Trolley Problem",
+                text: "A runaway trolley will kill five people. You can pull a lever to divert it, but it will kill one person instead. Is it morally right to pull the lever?"
+            },
+            {
+                title: "Newcomb's Paradox",
+                text: "An omniscient being predicts your choice between two boxes. Taking both seems rational, but taking one has always resulted in more money. What should you do?"
+            }
+        ];
+
+        const allPhilosophers = [
+            "Socrates", "Aristotle", "Marcus Aurelius", "Friedrich Nietzsche", 
+            "Heraclitus", "Jesus", "René Descartes", "Jean-Paul Sartre", 
+            "George Berkeley", "Immanuel Kant", "Plato", "John Locke"
+        ];
+
+        let availableQuotes = [];
+        let currentQuote;
+        let score = 0;
+        let totalAnswered = 0;
+        let answeredThisRound = false;
+
+        function initializeQuotePool() {
+            availableQuotes = [...quotes];
+            shuffleArray(availableQuotes);
+        }
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        function getNextQuote() {
+            if (availableQuotes.length === 0) {
+                showCompletionMessage();
+                return null;
+            }
+            return availableQuotes.pop();
+        }
+
+        function getRandomParadox() {
+            return paradoxes[Math.floor(Math.random() * paradoxes.length)];
+        }
+
+        function getRandomOptions(correctAnswer) {
+            const options = [correctAnswer];
+            const otherPhilosophers = allPhilosophers.filter(p => p !== correctAnswer);
+            
+            while (options.length < 4) {
+                const random = otherPhilosophers[Math.floor(Math.random() * otherPhilosophers.length)];
+                if (!options.includes(random)) {
+                    options.push(random);
+                }
+            }
+            
+            return options.sort(() => Math.random() - 0.5);
+        }
+
+        function displayQuote() {
+            currentQuote = getNextQuote();
+            
+            if (!currentQuote) return;
+            
+            answeredThisRound = false;
+            
+            document.getElementById('quote-text').textContent = `"${currentQuote.text}"`;
+            document.getElementById('result-area').innerHTML = '';
+            document.getElementById('result-area').classList.add('hidden');
+            document.getElementById('next-btn').classList.add('hidden');
+            document.getElementById('question-num').textContent = totalAnswered + 1;
+            document.getElementById('total-questions').textContent = quotes.length;
+            
+            const options = getRandomOptions(currentQuote.philosopher);
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+            
+            options.forEach(philosopher => {
+                const btn = document.createElement('button');
+                btn.className = 'philosopher-btn';
+                btn.textContent = philosopher;
+                btn.onclick = () => checkAnswer(philosopher, btn);
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function checkAnswer(selected, btn) {
+            if (answeredThisRound) return;
+            
+            answeredThisRound = true;
+            totalAnswered++;
+            
+            const buttons = document.querySelectorAll('.philosopher-btn');
+            buttons.forEach(b => b.style.pointerEvents = 'none');
+            
+            const resultArea = document.getElementById('result-area');
+            resultArea.classList.remove('hidden');
+            
+            if (selected === currentQuote.philosopher) {
+                score++;
+                btn.classList.add('correct');
+                resultArea.innerHTML = `
+                    <div class="result-message correct">
+                        ✓ Correct! That was ${currentQuote.philosopher}!
+                    </div>
+                    <div class="philosopher-info">
+                        <h3>About ${currentQuote.philosopher}:</h3>
+                        <p>${currentQuote.info}</p>
+                    </div>
+                `;
+            } else {
+                btn.classList.add('incorrect');
+                buttons.forEach(b => {
+                    if (b.textContent === currentQuote.philosopher) {
+                        b.classList.add('correct');
+                    }
+                });
+                resultArea.innerHTML = `
+                    <div class="result-message incorrect">
+                        ✗ Not quite! The correct answer was ${currentQuote.philosopher}.
+                    </div>
+                    <div class="philosopher-info">
+                        <h3>About ${currentQuote.philosopher}:</h3>
+                        <p>${currentQuote.info}</p>
+                    </div>
+                `;
+            }
+            
+            const paradox = getRandomParadox();
+            resultArea.innerHTML += `
+                <div class="paradox-section">
+                    <h3>🤔 Food for Thought: ${paradox.title}</h3>
+                    <p>${paradox.text}</p>
+                </div>
+            `;
+            
+            document.getElementById('score').textContent = score;
+            document.getElementById('total').textContent = totalAnswered;
+            document.getElementById('next-btn').classList.remove('hidden');
+        }
+
+        function showCompletionMessage() {
+            const quizArea = document.getElementById('quiz-area');
+            const percentage = Math.round((score / quotes.length) * 100);
+            
+            let message = '';
+            if (percentage === 100) {
+                message = "Perfect score! You're a true philosophy master! 🏆";
+            } else if (percentage >= 80) {
+                message = "Excellent work! You know your philosophers well! 🌟";
+            } else if (percentage >= 60) {
+                message = "Good job! You have a solid understanding of philosophy! 📚";
+            } else {
+                message = "Keep learning! Philosophy is a lifelong journey! 💭";
+            }
+            
+            quizArea.innerHTML = `
+                <div class="completion-message">
+                    <h2>🎉 Quiz Complete!</h2>
+                    <p style="font-size: 1.3em; margin: 15px 0;">Final Score: <strong>${score} / ${quotes.length}</strong> (${percentage}%)</p>
+                    <p style="font-size: 1.1em;">${message}</p>
+                    <button class="restart-btn" onclick="restartQuiz()">Play Again</button>
+                </div>
+            `;
+        }
+
+        function restartQuiz() {
+            score = 0;
+            totalAnswered = 0;
+            document.getElementById('score').textContent = score;
+            document.getElementById('total').textContent = totalAnswered;
+            
+            const quizArea = document.getElementById('quiz-area');
+            quizArea.innerHTML = `
+                <div class="quote-container">
+                    <div class="quote-text" id="quote-text">"Loading quote..."</div>
+                </div>
+                <div class="philosopher-buttons" id="options-container"></div>
+                <div id="result-area" class="hidden"></div>
+                <button id="next-btn" class="next-btn hidden">Next Quote →</button>
+            `;
+            
+            document.getElementById('next-btn').onclick = displayQuote;
+            
+            initializeQuotePool();
+            displayQuote();
+        }
+
+        document.getElementById('next-btn').onclick = displayQuote;
+
+        // Initialize the quiz
+        initializeQuotePool();
+        displayQuote();
+    </script>
+</body>
+</html>
